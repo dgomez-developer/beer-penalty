@@ -12,10 +12,15 @@ jobs:
     - uses: subosito/flutter-action@v1
       with:
         flutter-version: '1.7.8+hotfix.4'
-    - working-directory: ./beer_penalty    
-    - run: flutter pub get
-    - run: flutter test
-    - run: flutter build apk --debug --split-per-abi
+    - name: Get dependencies
+      working-directory: ./beer_penalty
+      run: flutter pub get
+    - name: Run tests
+      working-directory: ./beer_penalty
+      run: flutter test
+    - name: Build APK
+      working-directory: ./beer_penalty
+      run: flutter build apk --debug --split-per-abi
     - name: Create a Release APK
       uses: ncipollo/release-action@v1
       working-directory: ./beer_penalty
