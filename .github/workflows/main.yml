@@ -13,17 +13,16 @@ jobs:
       with:
         flutter-version: '1.7.8+hotfix.4'
     - name: Get dependencies
-      working-directory: ./beer_penalty
       run: flutter pub get
+      working-directory: ./beer_penalty      
     - name: Run tests
-      working-directory: ./beer_penalty
       run: flutter test
+      working-directory: ./beer_penalty      
     - name: Build APK
-      working-directory: ./beer_penalty
       run: flutter build apk --debug --split-per-abi
+      working-directory: ./beer_penalty
     - name: Create a Release APK
       uses: ncipollo/release-action@v1
-      working-directory: ./beer_penalty
       with:
-        artifacts: "build/app/outputs/apk/debug/*.apk"
+        artifacts: "beer_penalty/build/app/outputs/apk/debug/*.apk"
         token: ${{ secrets.TOKEN }}
