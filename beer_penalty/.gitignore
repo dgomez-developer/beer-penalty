@@ -38,6 +38,6 @@ lib/generated_plugin_registrant.dart
 
 #Firebase Credentials & Keys
 /android/app/google-services.json
-/ios/Runner/GoogleService-Ingo.plist
+/ios/Runner/GoogleService-Info.plist
 
 
