@@ -14,7 +14,7 @@ description: Fultter app for the beer penalty board
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -25,6 +25,9 @@ dependencies:
   cupertino_icons: ^0.1.2
   firebase_auth: ^0.15.5+3
   google_sign_in: ^4.3.0
+  cloud_firestore: ^0.13.4+2
+  firebase_messaging: ^6.0.13
+  shared_preferences: ^0.5.6+3
 
 dev_dependencies:
   flutter_test:

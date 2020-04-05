@@ -1,4 +1,9 @@
+import 'dart:io';
+
+import 'package:beer_penalty/UserProfile.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 import 'HomeScreen.dart';
 import 'SignIn.dart';
@@ -9,44 +14,116 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
+  @override
+  void initState() {
+    super.initState();
+    if (Platform.isIOS) {
+      _firebaseMessaging
+          .requestNotificationPermissions(const IosNotificationSettings(
+        badge: true,
+        sound: true,
+        alert: true,
+      ));
+      _firebaseMessaging.onIosSettingsRegistered
+          .listen((IosNotificationSettings settings) {
+        print("Settings registered: $settings");
+      });
+    }
+    _firebaseMessaging.configure(onLaunch: (Map<String, dynamic> message) {
+      print('On Launch: ' + message.toString());
+    }, onMessage: (Map<String, dynamic> message) {
+      print('On Message: ' + message.toString());
+    }, onResume: (Map<String, dynamic> message) {
+      print('On Resume: ' + message.toString());
+    });
+    _firebaseMessaging.getToken().then((token) {
+      print(token);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        color: Colors.white,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              FlutterLogo(size: 150),
-              SizedBox(height: 50),
-              _signInButton(),
-            ],
-          ),
-        ),
-      ),
+    return FutureBuilder<UserProfile>(
+      future: signInWithGoogle(),
+      builder: (BuildContext context, AsyncSnapshot<UserProfile> snapshot) {
+        if (snapshot.hasData) {
+          SchedulerBinding.instance.addPostFrameCallback((_) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => HomeScreen()),
+                  (Route<dynamic> route) => false,
+            );
+          });
+          return Scaffold(
+            body: Container(
+              color: Colors.teal,
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Image.asset('assets/beer-icon.png', width: 150, height: 150),
+                  ],
+                ),
+              ),
+            ),
+          );
+        } else if (snapshot.hasError) {
+          return Scaffold(
+            body: Container(
+              color: Colors.teal,
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Image.asset('assets/beer-icon.png', width: 150, height: 150),
+                    SizedBox(height: 50),
+                    _signInButton(),
+                  ],
+                ),
+              ),
+            ),
+          );
+        } else {
+          return Scaffold(
+            body: Container(
+              color: Colors.teal,
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Image.asset('assets/beer-icon.png', width: 150, height: 150),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+      },
     );
   }
 
   Widget _signInButton() {
-
     return OutlineButton(
-      splashColor: Colors.grey,
+      splashColor: Colors.amber,
       onPressed: () {
         signInWithGoogle().whenComplete(() {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) {
-                return HomeScreen();
-              },
-            ),
-          );
+          SchedulerBinding.instance.addPostFrameCallback((_) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => HomeScreen()),
+                  (Route<dynamic> route) => false,
+            );
+          });
         });
       },
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
       highlightElevation: 0,
-      borderSide: BorderSide(color: Colors.grey),
+      borderSide: BorderSide(color: Colors.amber),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
         child: Row(
@@ -60,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 'Sign in with Google',
                 style: TextStyle(
                   fontSize: 20,
-                  color: Colors.grey,
+                  color: Colors.amber,
                 ),
               ),
             )
@@ -69,5 +146,4 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-
 }
