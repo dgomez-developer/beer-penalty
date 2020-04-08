@@ -9,4 +9,7 @@ This project consists of a Flutter app & some Firebase cloud functions for sendi
 
 * iOS Developer paid account if you would like to run push notifications on iOS devices.
 
+## Tools
+
+* [App icons generator](https://appicon.co/)
 
