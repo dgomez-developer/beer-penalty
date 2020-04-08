@@ -12,4 +12,5 @@ This project consists of a Flutter app & some Firebase cloud functions for sendi
 ## Tools
 
 * [App icons generator](https://appicon.co/)
+* [Funny fonts](https://www.fontspace.com/category/funny?p=2)
 
