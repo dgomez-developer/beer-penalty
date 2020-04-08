@@ -3,7 +3,7 @@
 This project consists of a Flutter app & some Firebase cloud functions for sending push notifications when there is a change in the board.
 
 * Flutter app project: `beer_penalty` folder.
-* Firebase Cloud functions: `function` folder.
+* Firebase Cloud functions: `cloud-functions` folder.
 
 ## Requeriments for make this project work
 
