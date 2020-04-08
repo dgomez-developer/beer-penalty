@@ -24,6 +24,9 @@ class Repository {
   static Future<UserProfile> getUserProfile(String id) async {
     DocumentSnapshot value =
     await Firestore.instance.collection('users').document(id).get();
+    if(value.data == null || value.data.isEmpty){
+      return null;
+    }
     return UserProfile(
         value.data['accessToken'],
         value.data['idToken'],
