@@ -7,7 +7,7 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="androidx.multidex.MultiDexApplication"
-        android:label="beer_penalty"
+        android:label="Beer Penalty Board"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
