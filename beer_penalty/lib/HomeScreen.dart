@@ -31,7 +31,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Beer Penalty"),
+          title: Text("Beer Penalty Board",
+              style: TextStyle(fontFamily: 'Funtasia', fontSize: 30)),
           actions: <Widget>[
             PopupMenuButton(
                 onSelected: (value) {
@@ -55,55 +56,86 @@ class _HomeScreenState extends State<HomeScreen> {
         body: StreamBuilder(
           stream: Firestore.instance.collection('users').snapshots(),
           builder: (context, snapshot) {
-            if (!snapshot.hasData) return const Text('Loading');
-            return ListView.builder(
-              itemCount: snapshot.data.documents.length,
-              itemBuilder: (context, index) {
-                return _buildUser(context, snapshot.data.documents[index]);
-              },
-            );
+            if (!snapshot.hasData)
+              return new Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("assets/beer-bg.jpg"),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: Container(
+                      alignment: Alignment.center,
+                      child: Text('Loading beers ...')));
+            return Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("assets/beer-bg.jpg"),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: ListView.builder(
+                  itemCount: snapshot.data.documents.length,
+                  itemBuilder: (context, index) {
+                    return _buildUser(context, snapshot.data.documents[index]);
+                  },
+                ));
           },
         ));
   }
 }
 
 Widget _buildUser(BuildContext context, DocumentSnapshot document) {
-  return ListTile(
-      contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      leading: CircleAvatar(
-        backgroundImage: NetworkImage(document['userImage']),
-        radius: 30,
-        backgroundColor: Colors.transparent,
-      ),
-      title: Text(document['userName']),
-      subtitle: Column(children: [
-        (document['beers'] == 0)
-            ? Text('Congratulations you have no beers!')
-            : createBeers(document['beers']),
-        Row(children: [
-          IconButton(
-            icon: Icon(Icons.add, size: 20),
-            onPressed: () {
-              updateBeers(document, document['beers'] + 1);
-            },
+  return Container(
+      color: Colors.grey.withAlpha(50),
+      child: ListTile(
+          contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+          leading: CircleAvatar(
+            backgroundImage: NetworkImage(document['userImage']),
+            radius: 30,
+            backgroundColor: Colors.transparent,
           ),
-          IconButton(
-            icon: Icon(Icons.remove, size: 20),
-            onPressed: () {
-              updateBeers(document, document['beers'] - 1);
-            },
-          )
-        ])
-      ]));
+          title: Text(document['userName'],
+              style: TextStyle(fontFamily: 'Funtasia', fontSize: 20)),
+          subtitle: Column(children: [
+            SizedBox(height: 10),
+            (document['beers'] == 0)
+                ? Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: Text('Congratulations you have no beers!'))
+                : createBeers(document['beers'], context),
+            SizedBox(height: 10),
+            Row(
+                children: [
+              GestureDetector(
+                onTap:(){
+                  updateBeers(document, document['beers'] + 1);
+                },
+                child: Icon(Icons.add, size: 25)
+              ),
+                  SizedBox(width: 10),
+
+                  GestureDetector(
+                  onTap:(){
+                    updateBeers(document, document['beers'] - 1);
+                  },
+                  child: Icon(Icons.remove, size: 25)
+              ),
+            ])
+          ])));
 }
 
-Widget createBeers(int beers) {
-  return Wrap(
-    alignment: WrapAlignment.start,
-    runSpacing: 5.0,
-    spacing: 5.0,
-    children: createListOfBeerImages(beers),
-  );
+Widget createBeers(int beers, BuildContext context) {
+  return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width),
+      child: Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: Wrap(
+            crossAxisAlignment: WrapCrossAlignment.start,
+            alignment: WrapAlignment.start,
+            direction: Axis.horizontal,
+            children: createListOfBeerImages(beers),
+          )));
 }
 
 List<Widget> createListOfBeerImages(int beers) {
