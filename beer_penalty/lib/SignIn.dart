@@ -11,6 +11,18 @@ String name;
 String email;
 String imageUrl;
 
+// sign in anonymously
+Future signInAnon() async {
+  try {
+    AuthResult result = await _auth.signInAnonymously();
+    FirebaseUser user = result.user;
+    return user;
+  } catch (e) {
+    print(e.toString());
+    return null;
+  }
+}
+
 Future<UserProfile> signInWithGoogle() async {
 
   final String userId = await Repository.getUserId();

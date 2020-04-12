@@ -1,4 +1,3 @@
-
 import 'package:beer_penalty/PushNotifications.dart';
 import 'package:beer_penalty/UserProfile.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +12,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -65,7 +63,10 @@ class _LoginScreenState extends State<LoginScreen> {
             children: <Widget>[
               Image.asset('assets/beer-icon.png', width: 150, height: 150),
               SizedBox(height: 50),
-              _signInButton(),
+              _signInButton(signInWithEmail(), 'Sign in with Google',
+                  AssetImage("assets/google-logo.png")),
+              SizedBox(height: 50),
+              _signInButton(signInAsGuest(), 'Sign in as Guest', null)
             ],
           ),
         ),
@@ -73,14 +74,18 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _signInButton() {
+  Function() signInWithEmail() => () => signInWithGoogle().whenComplete(() {
+        navigateTo(context, HomeScreen());
+      });
+
+  Function() signInAsGuest() =>
+      () => signInAnon().whenComplete(() => navigateTo(context, HomeScreen()));
+
+  Widget _signInButton(
+      Function() onPressed, String buttonText, AssetImage buttonImage) {
     return OutlineButton(
       splashColor: Colors.amber,
-      onPressed: () {
-        signInWithGoogle().whenComplete(() {
-          navigateTo(context, HomeScreen());
-        });
-      },
+      onPressed: onPressed,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
       highlightElevation: 0,
       borderSide: BorderSide(color: Colors.white),
@@ -90,11 +95,13 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Image(image: AssetImage("assets/google-logo.png"), height: 35.0),
+            (buttonImage != null)
+                ? Image(image: buttonImage, height: 35.0)
+                : Icon(Icons.account_box, color: Colors.white),
             Padding(
               padding: const EdgeInsets.only(left: 10),
               child: Text(
-                'Sign in with Google',
+                buttonText,
                 style: TextStyle(
                   fontSize: 20,
                   color: Colors.white,

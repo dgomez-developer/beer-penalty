@@ -21,11 +21,14 @@ class _HomeScreenState extends State<HomeScreen> {
     listenIncommingPushNotifications();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Repository.getUserId().then((userId) => {
-            Repository.getUserProfile(userId).then((value) => {
-                  setState(() {
-                    profileImageUrl = value.imageUrl;
-                  })
-                })
+            if (userId != null)
+              {
+                Repository.getUserProfile(userId).then((value) => {
+                      setState(() {
+                        profileImageUrl = value.imageUrl;
+                      })
+                    })
+              }
           });
     });
   }
@@ -115,22 +118,18 @@ Widget _buildUser(BuildContext context, DocumentSnapshot document) {
                     child: Text('Congratulations you have no beers!'))
                 : createBeers(document['beers'], context),
             SizedBox(height: 10),
-            Row(
-                children: [
+            Row(children: [
               GestureDetector(
-                onTap:(){
-                  updateBeers(document, document['beers'] + 1);
-                },
-                child: Icon(Icons.add, size: 25)
-              ),
-                  SizedBox(width: 10),
-
-                  GestureDetector(
-                  onTap:(){
+                  onTap: () {
+                    updateBeers(document, document['beers'] + 1);
+                  },
+                  child: Icon(Icons.add, size: 25)),
+              SizedBox(width: 10),
+              GestureDetector(
+                  onTap: () {
                     updateBeers(document, document['beers'] - 1);
                   },
-                  child: Icon(Icons.remove, size: 25)
-              ),
+                  child: Icon(Icons.remove, size: 25)),
             ])
           ])));
 }
