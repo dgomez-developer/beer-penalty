@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'LoginScreen.dart';
+import 'PushNotifications.dart';
 import 'SignIn.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -16,6 +17,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    configureDidReceiveLocalNotificationSubject();
+    listenIncommingPushNotifications();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Repository.getUserId().then((userId) => {
             Repository.getUserProfile(userId).then((value) => {
@@ -25,6 +28,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 })
           });
     });
+  }
+
+  @override
+  void dispose() {
+    didReceiveLocalNotificationSubject.close();
+    selectNotificationSubject.close();
+    super.dispose();
   }
 
   @override

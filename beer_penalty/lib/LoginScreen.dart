@@ -1,11 +1,10 @@
-import 'dart:io';
 
+import 'package:beer_penalty/PushNotifications.dart';
 import 'package:beer_penalty/UserProfile.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 
 import 'HomeScreen.dart';
+import 'Navigator.dart';
 import 'SignIn.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -14,33 +13,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   @override
   void initState() {
     super.initState();
-    if (Platform.isIOS) {
-      _firebaseMessaging
-          .requestNotificationPermissions(const IosNotificationSettings(
-        badge: true,
-        sound: true,
-        alert: true,
-      ));
-      _firebaseMessaging.onIosSettingsRegistered
-          .listen((IosNotificationSettings settings) {
-        print("Settings registered: $settings");
-      });
-    }
-    _firebaseMessaging.configure(onLaunch: (Map<String, dynamic> message) {
-      print('On Launch: ' + message.toString());
-    }, onMessage: (Map<String, dynamic> message) {
-      print('On Message: ' + message.toString());
-    }, onResume: (Map<String, dynamic> message) {
-      print('On Resume: ' + message.toString());
-    });
-    _firebaseMessaging.getToken().then((token) {
-      print(token);
-    });
+    requestPermissionsForiOS();
   }
 
   @override
@@ -49,61 +26,50 @@ class _LoginScreenState extends State<LoginScreen> {
       future: signInWithGoogle(),
       builder: (BuildContext context, AsyncSnapshot<UserProfile> snapshot) {
         if (snapshot.hasData) {
-          SchedulerBinding.instance.addPostFrameCallback((_) {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => HomeScreen()),
-                  (Route<dynamic> route) => false,
-            );
-          });
-          return Scaffold(
-            body: Container(
-              color: Colors.teal,
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Image.asset('assets/beer-icon.png', width: 150, height: 150),
-                  ],
-                ),
-              ),
-            ),
-          );
+          navigateTo(context, HomeScreen());
+          return _buildSplash();
         } else if (snapshot.hasError) {
-          return Scaffold(
-            body: Container(
-              color: Colors.teal,
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Image.asset('assets/beer-icon.png', width: 150, height: 150),
-                    SizedBox(height: 50),
-                    _signInButton(),
-                  ],
-                ),
-              ),
-            ),
-          );
+          return _buildSplashWithLoginButton();
         } else {
-          return Scaffold(
-            body: Container(
-              color: Colors.teal,
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Image.asset('assets/beer-icon.png', width: 150, height: 150),
-                  ],
-                ),
-              ),
-            ),
-          );
+          return _buildSplash();
         }
       },
+    );
+  }
+
+  Scaffold _buildSplash() {
+    return Scaffold(
+      body: Container(
+        color: Colors.teal,
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Image.asset('assets/beer-icon.png', width: 150, height: 150),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Scaffold _buildSplashWithLoginButton() {
+    return Scaffold(
+      body: Container(
+        color: Colors.teal,
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Image.asset('assets/beer-icon.png', width: 150, height: 150),
+              SizedBox(height: 50),
+              _signInButton(),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -112,13 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
       splashColor: Colors.amber,
       onPressed: () {
         signInWithGoogle().whenComplete(() {
-          SchedulerBinding.instance.addPostFrameCallback((_) {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => HomeScreen()),
-                  (Route<dynamic> route) => false,
-            );
-          });
+          navigateTo(context, HomeScreen());
         });
       },
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
