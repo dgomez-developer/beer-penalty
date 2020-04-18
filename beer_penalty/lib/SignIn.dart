@@ -1,4 +1,4 @@
-import 'package:beer_penalty/UserProfile.dart';
+import 'package:beer_penalty/model/UserProfile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:google_sign_in/google_sign_in.dart';

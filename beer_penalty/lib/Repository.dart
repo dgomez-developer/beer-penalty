@@ -1,4 +1,4 @@
-import 'package:beer_penalty/UserProfile.dart';
+import 'package:beer_penalty/model/UserProfile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

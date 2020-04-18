@@ -1,5 +1,6 @@
 import 'package:beer_penalty/PushNotifications.dart';
-import 'package:beer_penalty/UserProfile.dart';
+import 'package:beer_penalty/model/UserProfile.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'HomeScreen.dart';
@@ -15,12 +16,15 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    requestPermissionsForiOS();
+    if (!kIsWeb) {
+      requestPermissionsForiOS();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<UserProfile>(
+    return
+      FutureBuilder<UserProfile>(
       future: signInWithGoogle(),
       builder: (BuildContext context, AsyncSnapshot<UserProfile> snapshot) {
         if (snapshot.hasData) {

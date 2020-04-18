@@ -27,6 +27,7 @@ dependencies:
   google_sign_in: ^4.3.0
   cloud_firestore: ^0.13.4+2
   firebase_messaging: ^6.0.13
+  firebase_analytics: ^5.0.11
   flutter_local_notifications: ^1.4.0
   shared_preferences: ^0.5.6+3
   rxdart: ^0.23.1

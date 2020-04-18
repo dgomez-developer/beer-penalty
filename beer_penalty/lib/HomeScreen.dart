@@ -1,5 +1,6 @@
 import 'package:beer_penalty/Repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'LoginScreen.dart';
@@ -17,8 +18,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    configureDidReceiveLocalNotificationSubject();
-    listenIncommingPushNotifications();
+    if (!kIsWeb) {
+      configureDidReceiveLocalNotificationSubject();
+      listenIncommingPushNotifications();
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Repository.getUserId().then((userId) => {
             if (userId != null)
@@ -35,8 +38,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
-    didReceiveLocalNotificationSubject.close();
-    selectNotificationSubject.close();
+    if (!kIsWeb) {
+      didReceiveLocalNotificationSubject.close();
+      selectNotificationSubject.close();
+    }
     super.dispose();
   }
 
