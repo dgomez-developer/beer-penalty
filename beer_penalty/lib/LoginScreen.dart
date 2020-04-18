@@ -1,5 +1,6 @@
 import 'package:beer_penalty/PushNotifications.dart';
 import 'package:beer_penalty/model/UserProfile.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -31,6 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
           navigateTo(context, HomeScreen());
           return _buildSplash();
         } else if (snapshot.hasError) {
+          Crashlytics.instance.log(snapshot.error.toString());
           return _buildSplashWithLoginButton();
         } else {
           return _buildSplash();
