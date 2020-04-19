@@ -12,7 +12,7 @@ jobs:
       # Step 2: Decode Google services configuration file
     - name: Decode google-services.json
       env:
-        FIREBASE_ANDROID_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
+        FIREBASE_ANDROID_CONFIG: ${{ secrets.FIREBASE_ANDROID_CONFIG }}
       run: echo $FIREBASE_ANDROID_CONFIG > beer_penalty/android/app/google-services.json
     - uses: subosito/flutter-action@v1
     - name: Get dependencies
