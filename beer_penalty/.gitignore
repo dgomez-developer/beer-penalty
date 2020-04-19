@@ -42,5 +42,7 @@ lib/generated_plugin_registrant.dart
 /web/FirebaseConfig.js
 .firebase
 .firebaserc
+/android/fastlane/.env.default
+/ios/fastlane/.env.default
 
 

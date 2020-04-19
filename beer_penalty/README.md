@@ -2,6 +2,202 @@
 
 Flutter app for the beer penalty board (Android, iOS, Web)
 
+## How to deploy web on Firebase Hosting Service
+
+### Requeriments:
+
+* [Firebase CLI](https://firebase.google.com/docs/cli?hl=vi)
+* Firebase project with the [web client config setup](https://firebase.google.com/docs/web/setup).
+
+### Steps:
+
+Create a file `FirebaseConfig.js` in the folder `web` and fill in the file with the json provided by firebase for your web client:
+```
+var firebase_config =
+{
+  "apiKey": <YOUR_API_KEY>,
+  "authDomain": <YOUR_AUTH_DOMAIN>,
+  "databaseURL": <YOUR_DB_URL>,
+  "projectId": <YOUR_PROJECT_ID>,
+  "storageBucket": <YOUR_STORAGE_ID>,
+  "messagingSenderId": <YOUR_SENDER_ID>,
+  "appId": <YOUR_APP_ID>,
+  "measurementId": <YOUR_MEASUREMENT_ID>
+};
+```
+
+Login in firebase:
+
+```
+firebase login (--reauth)
+```
+
+Init firebase in the root folder:
+
+```
+firebase init
+```
+
+Select the hosting option, your existing project & set the folder build/web as root folder for the deployments.
+
+```
+flutter build web
+```
+
+This will create abuild/web folder where all the files will be located.
+
+```
+firebase deploy
+```
+
+Click on the link provided when the deployment is finished to check your web =)
+
+**DO NOT FORGET**: to add the `FirebaseConfig.js` file to your `.gitignore` if you do not want to push your client credentials.
+
+## Distributing BETAs via Firebase
+
+### Requirements:
+
+* [Fastlane](https://docs.fastlane.tools/)
+* Firebase project with [Android & iOS clients config setup](https://firebase.google.com/docs/flutter/setup?platform=android)
+* Apple developer account (only iOS distribution)
+
+### Android
+
+Enter in the `android` folder & execute:
+```
+fastlane init
+```
+You can either choose to already specify your package name or skip it and do it later manually. You can check it in the `AndroidManifest.xml` file.
+
+This will generate a folder `fastlane` under the `android` folder.
+
+Install the firebase distribution plugin:
+```
+fastlane add_plugin firebase_app_distribution
+```
+
+**TROUBLE SHOOTING**: If you get an error saying that there are packages missing, execute the following comand to download the missing packages:
+```
+bundle install
+```
+
+Go to the firebase console and click on the **Distribution** section and with the Android app selected, click on the **Get started** button.
+
+Remove the initial configuration provided in the `Fastfile` and copy the following:
+
+```
+default_platform(:android)
+
+platform :android do
+    desc "Script to automate app distribution"
+    gradle(
+        task: 'assemble',
+        build_type: 'Release'
+    )
+    lane :android_beta_app do
+        firebase_app_distribution(
+            app: ENV['APP_ID'],
+            groups: "<YOUR_GROUPS>",
+            release_notes: "First version",
+            firebase_cli_path: "/usr/local/bin/firebase",
+            apk_path: "../build/app/outputs/apk/release/app-release.apk"
+        )
+    end
+end
+```
+As you can see the `APP_ID` is an environment variable. I choose to use the [dotenv](https://docs.fastlane.tools/best-practices/keys/) fastlane plugin.
+
+Install the gem:
+```
+gem install dotenv
+```
+
+Create a `.env` file with your `APP_ID` specified:
+
+```
+APP_ID="<YOUR_APP_ID"
+```
+
+Execute the following command to distribute a BETA:
+
+```
+bundle exec fastlane android_beta_app
+```
+
+**DO NOT FORGET**: to add the `.env` file to your `.gitignore` if you do not want to push your client credentials.
+
+## iOS
+
+Enter in the `ios` folder & execute:
+```
+fastlane init
+```
+You can either choose to already specify your bundle ID & apple account or skip it and do it later manually. You can check it by opening the project in xcode and clicking on Runner target > General > Identifity section.
+
+This will generate a folder `fastlane` under the `android` folder.
+
+Install the firebase distribution plugin:
+```
+fastlane add_plugin firebase_app_distribution
+```
+
+**TROUBLE SHOOTING**: If you get an error saying that there are packages missing, execute the following comand to download the missing packages:
+```
+bundle install
+```
+
+Go to the firebase console and click on the **Distribution** section and with the iOS app selected, click on the **Get started** button.
+
+Remove the initial configuration provided in the `Fastfile` and copy the following:
+
+```
+default_platform(:ios)
+
+platform :ios do
+  desc "Script to automate app distribution"
+    lane :ios_beta_app do
+        build_app(
+            scheme: "Runner",
+            archive_path: "./build/Runner.xcarchive",
+            export_method: "development",
+            output_directory: "./build/Runner"
+        )
+        firebase_app_distribution(
+            app: ENV['APP_ID'],
+            groups: "<YOUR_GROUPS>",
+            release_notes: "Initial test version of the app",
+            firebase_cli_path: "/usr/local/bin/firebase",
+            ipa_path: "./build/Runner/Runner.ipa"
+        )
+    end
+end
+```
+As you can see the `APP_ID` is an environment variable. I choose to use the [dotenv](https://docs.fastlane.tools/best-practices/keys/) fastlane plugin.
+
+Install the gem:
+```
+gem install dotenv
+```
+
+Create a `.env` file with your `APP_ID` specified:
+
+```
+APP_ID="<YOUR_APP_ID"
+```
+
+Open the project in xcode and specify your Apple Development team under the **target Runner > Signing & Capabilities > Signing > Team**
+
+You can follow [this article](https://medium.com/multinetinventiv/introduction-to-firebase-app-distribution-in-ios-93298d59c658) if it is the first time you set this up.
+
+Execute the following command to distribute a BETA:
+
+```
+bundle exec fastlane ios_beta_app
+```
+
+**DO NOT FORGET**: to add the `.env` file to your `.gitignore` if you do not want to push your client credentials.
+
 ## Trouble shooting
 
 ### Multidex support for androidx error.
@@ -99,3 +295,5 @@ For the release flavor, please generate a [custom one](https://developer.android
 ## References
 
  * [Easy Push Notifications with Flutter and Firebase Cloud Messaging](https://medium.com/@SebastianEngel/easy-push-notifications-with-flutter-and-firebase-cloud-messaging-d96084f5954f)
+ * [Introduction to Firebase App Distribution in iOS](https://medium.com/multinetinventiv/introduction-to-firebase-app-distribution-in-ios-93298d59c658)
+ * [Deploying Flutter app to Firebase App Distribution using Fastlane](https://blog.codemagic.io/deploying-flutter-app-to-firebase-app-distribution-using-fastlane/)

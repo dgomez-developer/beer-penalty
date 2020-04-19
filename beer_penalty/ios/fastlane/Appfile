@@ -1,0 +1,6 @@
+app_identifier("com.developer.dgomez.beerPenalty") # The bundle identifier of your app
+apple_id("debora.gomez@mytoys.de") # Your Apple email address
+
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile
