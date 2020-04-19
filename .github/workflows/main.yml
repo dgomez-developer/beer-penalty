@@ -29,3 +29,5 @@ jobs:
       with:
         artifacts: "beer_penalty/build/app/outputs/apk/debug/*.apk"
         token: ${{ secrets.TOKEN }}
+        allowUpdates: true
+        tag: "1.0.0"
