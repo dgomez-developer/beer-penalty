@@ -1,9 +1,10 @@
-push:
-  branches:
-    - develop
-pull_request:
-  branches:
-    - develop
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
 name: Test, Build Android, iOS & Web and Create debug apk
 jobs:
   build:
