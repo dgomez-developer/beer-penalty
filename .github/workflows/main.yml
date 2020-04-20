@@ -1,5 +1,10 @@
-on: push
-name: Test, Build and Release apk
+push:
+  branches:
+    - develop
+pull_request:
+  branches:
+    - develop
+name: Test, Build Android, iOS & Web and Create debug apk
 jobs:
   build:
     name: Build APK
@@ -9,12 +14,21 @@ jobs:
     - uses: actions/setup-java@v1
       with:
         java-version: '12.x'
-      # Step 2: Decode Google services configuration file
     - name: Decode google-services.json
       env:
         FIREBASE_ANDROID_CONFIG: ${{ secrets.FIREBASE_ANDROID_CONFIG }}
       run: echo $FIREBASE_ANDROID_CONFIG > beer_penalty/android/app/google-services.json
+    - name: Decode GoogleService-Info.plist
+      env:
+        FIREBASE_IOS_CONFIG: ${{ secrets.FIREBASE_IOS_CONFIG }}
+      run: echo $FIREBASE_IOS_CONFIG > beer_penalty/ios/Runner/GoogleService-Info.plist
+    - name: Decode GoogleService-Info.plist
+      env:
+        FIREBASE_WEB_CONFIG: ${{ secrets.FIREBASE_WEB_CONFIG }}
+      run: echo $FIREBASE_WEB_CONFIG > beer_penalty/web/FirebaseConfig.js     
     - uses: subosito/flutter-action@v1
+      with:
+        channel: 'beta' # or: 'dev' or 'stable'
     - name: Get dependencies
       run: flutter pub get
       working-directory: ./beer_penalty      
@@ -24,10 +38,16 @@ jobs:
     - name: Build APK
       run: flutter build apk --debug --split-per-abi
       working-directory: ./beer_penalty
-    - name: Create a Release APK
+    - name: Create a Debug APK
       uses: ncipollo/release-action@v1
       with:
         artifacts: "beer_penalty/build/app/outputs/apk/debug/*.apk"
         token: ${{ secrets.TOKEN }}
         allowUpdates: true
         tag: "1.0.0"
+    - name: Build IPA
+      run: flutter build ios
+      working-directory: ./beer_penalty
+    - name: Build WEB
+      run: flutter build web
+      working-directory: ./beer_penalty
