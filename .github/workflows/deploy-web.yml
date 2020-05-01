@@ -44,6 +44,9 @@ jobs:
       with:
         name: web-build
         path: beer_penalty
+    - name: Display structure of downloaded files
+      run: ls -R
+      working-directory: beer_penalty
     - name: Deploy to Firebase
       uses: w9jds/firebase-action@master
       with:
