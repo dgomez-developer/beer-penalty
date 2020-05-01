@@ -18,6 +18,7 @@ default_platform(:ios)
 platform :ios do
   desc "Script to automate app distribution"
     lane :ios_beta_app do
+        clear_derived_data
         build_app(
             scheme: "Runner",
             archive_path: "./build/Runner.xcarchive",
@@ -27,7 +28,7 @@ platform :ios do
         firebase_app_distribution(
             app: ENV['APP_ID'],
             groups: "minions",
-            release_notes: "Initial test version of the app",
+            release_notes: "Fix ios push notifications - try 2 new provisioning profile",
             firebase_cli_path: "/usr/local/bin/firebase",
             ipa_path: "./build/Runner/Runner.ipa"
         )
