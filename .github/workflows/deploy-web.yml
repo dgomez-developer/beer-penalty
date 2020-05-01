@@ -1,0 +1,24 @@
+on:
+  push:
+    branches:
+      - develop
+name: Deploy web into Firebase Hosting
+jobs:
+  deploy-to-firebase-hosting:
+    name: Deploy Web to Firebase Hosting
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-java@v1
+    - name: Decode Firebase Token
+    env:
+      FIREBASE_WEB_CONFIG: ${{ secrets.FIREBASE_WEB_CONFIG }}
+      FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+    run: echo $FIREBASE_WEB_CONFIG > beer_penalty/web/FirebaseConfig.js     
+    - uses: subosito/flutter-action@v1
+    - name: Get dependencies
+      run: flutter pub get
+      working-directory: ./beer_penalty      
+    - name: Run tests
+      run: flutter test
+      working-directory: ./beer_penalty      
