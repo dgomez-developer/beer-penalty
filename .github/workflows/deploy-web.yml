@@ -1,7 +1,10 @@
 on:
   push:
     branches:
-      - feature/github-actions
+      - develop
+  pull_request:
+    branches:
+      - develop
 name: Deploy web into Firebase Hosting
 jobs:
   deploy-to-firebase-hosting:
