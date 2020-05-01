@@ -38,8 +38,7 @@ jobs:
       uses: actions/upload-artifact@master
       with:
         name: web-build
-        path: build/web
-      working-directory: ./beer_penalty
+        path: beer_penalty/build/web
     - name: Download Artifact
       uses: actions/download-artifact@master
       with:
