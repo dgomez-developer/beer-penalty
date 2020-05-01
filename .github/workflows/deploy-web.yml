@@ -43,10 +43,10 @@ jobs:
       uses: actions/download-artifact@master
       with:
         name: web-build
-        path: beer_penalty
+        path: beer_penalty/web-build
     - name: Display structure of downloaded files
       run: ls -R
-      working-directory: beer_penalty
+      working-directory: beer_penalty/web-build
     - name: Deploy to Firebase
       uses: w9jds/firebase-action@master
       with:
