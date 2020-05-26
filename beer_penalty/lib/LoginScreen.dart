@@ -1,9 +1,11 @@
 import 'package:beer_penalty/PushNotifications.dart';
+import 'package:beer_penalty/UserProfileBloc.dart';
 import 'package:beer_penalty/model/UserProfile.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'BlocProvider.dart';
 import 'HomeScreen.dart';
 import 'Navigator.dart';
 import 'SignIn.dart';
@@ -25,8 +27,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return
-      FutureBuilder<UserProfile>(
-      future: signInWithGoogle(),
+      StreamBuilder<UserProfile>(
+      stream: BlocProvider.of<UserProfileBloc>(context).userProfileStream,
       builder: (BuildContext context, AsyncSnapshot<UserProfile> snapshot) {
         if (snapshot.hasData) {
           navigateTo(context, HomeScreen());
