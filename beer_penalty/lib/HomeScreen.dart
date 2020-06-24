@@ -13,15 +13,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String profileImageUrl = "https://i.picsum.photos/id/1062/200/200.jpg";
+  String profileImageUrl = ;
 
   @override
   void initState() {
     super.initState();
-    if (!kIsWeb) {
-      configureDidReceiveLocalNotificationSubject();
-      listenIncommingPushNotifications();
-    }
+    //TODO: call initApp() in BeersBloc
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Repository.getUserId().then((userId) => {
             if (userId != null)
@@ -38,10 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
-    if (!kIsWeb) {
-      didReceiveLocalNotificationSubject.close();
-      selectNotificationSubject.close();
-    }
+    // TODO: call dispose() in BeersBloc
     super.dispose();
   }
 

@@ -9,8 +9,10 @@ class UserProfile {
   final String email;
   final String imageUrl;
   final String name;
+  final String id;
 
   UserProfile(
+      this.id,
       this.accessToken,
       this.idToken,
       this.beers,

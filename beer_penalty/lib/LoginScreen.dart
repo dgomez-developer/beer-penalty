@@ -16,13 +16,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  @override
-  void initState() {
-    super.initState();
-    if (!kIsWeb) {
-      requestPermissionsForiOS();
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
